@@ -1,11 +1,14 @@
-# Usar la imagen de Maven para compilar (etapa 1)
+# Etapa de construcción
 FROM maven:3.9-amazoncorretto-17 AS builder
 
 WORKDIR /app
-COPY . .
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Usar imagen ligera para ejecutar (etapa 2)
+# Etapa de ejecución
 FROM amazoncorretto:17-alpine
 
 WORKDIR /app
